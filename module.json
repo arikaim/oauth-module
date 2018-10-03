@@ -1,0 +1,13 @@
+{
+    "title": "OAuth Client",
+    "version": "1.0",
+    "class": "OauthClient",
+    "description": "OAuth2 client.",
+    "requires": [
+        "league/oauth2-client"
+    ],
+    "help": {
+        "url": "http://oauth2-client.thephpleague.com/"
+    },
+   "type": "module"
+}
