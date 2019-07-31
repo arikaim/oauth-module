@@ -10,7 +10,7 @@
 namespace Arikaim\Modules\Oauth_Client;
 
 use Arikaim\Core\Utils\Utils;
-use Arikaim\Core\Module\Module;
+use Arikaim\Core\Packages\Module\Module;
 
 class OauthClient extends Module
 {
