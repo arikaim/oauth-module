@@ -3,7 +3,7 @@
  * Arikaim
  *
  * @link        http://www.arikaim.com
- * @copyright   Copyright (c) 2017-2018 Konstantin Atanasov <info@arikaim.com>
+ * @copyright   Copyright (c) 2017-2019 Konstantin Atanasov <info@arikaim.com>
  * @license     http://www.arikaim.com/license.html
  * 
 */
@@ -12,7 +12,7 @@ namespace Arikaim\Modules\Oauth_Client;
 use Arikaim\Core\Utils\Utils;
 use Arikaim\Core\Packages\Module\Module;
 
-class OauthClient extends Module
+class OAuth extends Module
 {
     private $provider;
    
@@ -20,7 +20,7 @@ class OauthClient extends Module
     {
         $this->provider = null;
         // module details
-        $this->setServiceName('oauth-client');  
+        $this->setServiceName('oauth');  
         $this->setBootable(false);
     }
 

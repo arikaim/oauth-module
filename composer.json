@@ -1,7 +1,7 @@
 {
-    "name": "arikaim/oauth-client-module",
-    "description": "Arikam Oauth Client Module",
-    "keywords": ["Module","OAuth","Arikaim Oauth client module"],
+    "name": "arikaim/oauth-module",
+    "description": "Arikam OAuth Client Module",
+    "keywords": ["Module","OAuth","Arikaim OAuth client module"],
     "type": "arikaim-module",
     "license": "GPL-3.0-or-later",
     "authors": [{
@@ -10,7 +10,7 @@
         "homepage": "http://arikaim.com"
     }],
     "require": {
-        "php": ">=5.6.0",
+        "php": ">=7.1",
         "arikaim/installer": "*",
         "league/oauth2-client": "^2.3"
     },
@@ -18,6 +18,6 @@
         "branch-alias": {
             "dev-master": "1.0-dev"
         },
-        "path": "oauth_client"
+        "path": "oauth"
     }
 }

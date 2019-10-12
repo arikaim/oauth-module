@@ -1,7 +1,7 @@
 {
     "title": "OAuth Client",
-    "version": "1.0",
-    "class": "OauthClient",
+    "version": "1.0.0",
+    "class": "OAuth",
     "description": "OAuth2 client.",
     "requires": [
         "league/oauth2-client"
