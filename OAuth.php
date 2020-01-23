@@ -7,7 +7,7 @@
  * @license     http://www.arikaim.com/license
  * 
 */
-namespace Arikaim\Modules\Oauth_Client;
+namespace Arikaim\Modules\Oauth;
 
 use Arikaim\Core\Extension\Module;
 
@@ -32,6 +32,7 @@ class OAuth extends Module
         // module details
         $this->setServiceName('oauth');  
     }
+    
     
     public function create($providerClass = null, array $options = [], array $collaborators = [])
     {
