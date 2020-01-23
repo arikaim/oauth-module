@@ -1,12 +1,18 @@
-<p align="center">
-    <img src="https://img.shields.io/github/release/arikaim/oauth-module.svg" alt="version: 1.0.0">
-    <img src="https://img.shields.io/badge/License-GPLv3-blue.svg" alt="license: GPL3">
-</p>
+### Arikaim CMS OAuth Client Module
+![1.0.0](https://img.shields.io/github/release/arikaim/oauth-module.svg)
+![GPLv3](https://img.shields.io/badge/License-GPLv3-blue.svg)
 
-# OAuth Module
-Arikaim OAuth client module
 
-### Install
-```
+
+#### Requirements 
+  * PHP 7.1
+  * [Arikaim CMS](https://github.com/arikaim/arikaim)
+
+
+#### Install
+
+```bash
+
 composer require arikaim/oauth-module
+
 ```

@@ -1,8 +1,11 @@
 {
     "title": "OAuth Client",
-    "version": "1.0.0",
+    "name": "oauth",
+    "package-type": "module",
+    "version": "1.0.2",
     "class": "OAuth",
-    "description": "OAuth2 client.",
+    "description": "OAuth client.",
+    "repository":"https://github.com/arikaim/oauth-module.git",
     "requires": [
         "league/oauth2-client"
     ],
