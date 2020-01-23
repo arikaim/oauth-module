@@ -2,8 +2,9 @@
     "title": "OAuth Client",
     "name": "oauth",
     "package-type": "module",
-    "version": "1.0.4",
+    "version": "1.0.5",
     "class": "Oauth",
+    "type": "package",
     "description": "OAuth client.",
     "repository":"https://github.com/arikaim/oauth-module.git",
     "requires": [
@@ -11,6 +12,5 @@
     ],
     "help": {
         "url": "http://oauth2-client.thephpleague.com/"
-    },
-   "type": "module"
+    }
 }

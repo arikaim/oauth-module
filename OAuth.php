@@ -32,8 +32,7 @@ class OAuth extends Module
         // module details
         $this->setServiceName('oauth');  
     }
-
-
+    
     public function create($providerClass = null, array $options = [], array $collaborators = [])
     {
         if ($providerClass == null || empty($providerClass) == true) {
