@@ -3,19 +3,29 @@
  * Arikaim
  *
  * @link        http://www.arikaim.com
- * @copyright   Copyright (c)  Konstantin Atanasov <info@arikaim.com>
+ * @copyright   Copyright (c) Konstantin Atanasov <info@arikaim.com>
  * @license     http://www.arikaim.com/license
  * 
 */
 namespace Arikaim\Modules\Oauth_Client;
 
-use Arikaim\Core\Utils\Utils;
 use Arikaim\Core\Extension\Module;
 
+/**
+ * OAuth module class
+ */
 class OAuth extends Module
 {
+    /**
+     * Provider reference
+     *
+     * @var object
+     */
     private $provider;
-   
+    
+    /**
+     * Constructor
+     */
     public function __construct()
     {
         $this->provider = null;
@@ -23,26 +33,32 @@ class OAuth extends Module
         $this->setServiceName('oauth');  
     }
 
-    public function __call($method, $args) 
-    {
-        return Utils::call($this->provider,$method,$args);       
-    }
 
-    public function create($provider_class_name = null, array $options = [], array $collaborators = [])
+    public function create($providerClass = null, array $options = [], array $collaborators = [])
     {
-        if ($provider_class_name == null || empty($provider_class_name) == true) {
-            $provider_class_name = "League\OAuth2\Client\Provider\GenericProvider";
+        if ($providerClass == null || empty($providerClass) == true) {
+            $providerClass = "League\OAuth2\Client\Provider\GenericProvider";
         }
-       
-        $this->provider = new $provider_class_name($options,$collaborators);
+        $this->provider = new $providerClass($options,$collaborators);
+
         return is_object($this->provider);
     }
 
+    /**
+     * Get provider
+     *
+     * @return object
+     */
     public function getProvider()
     {
         return $this->provider;
     }
 
+    /**
+     * Test module
+     *
+     * @return boolean
+     */
     public function test()
     {
         try {
@@ -53,6 +69,7 @@ class OAuth extends Module
             $this->error = $e->getMessage();         
             return false;
         }
+
         return $result;
     }
 }

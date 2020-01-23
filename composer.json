@@ -14,10 +14,7 @@
         "arikaim/installer": "*",
         "league/oauth2-client": "^2.3"
     },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "1.0-dev"
-        },
+    "extra": {     
         "path": "oauth"
     }
 }

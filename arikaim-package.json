@@ -2,8 +2,8 @@
     "title": "OAuth Client",
     "name": "oauth",
     "package-type": "module",
-    "version": "1.0.2",
-    "class": "OAuth",
+    "version": "1.0.4",
+    "class": "Oauth",
     "description": "OAuth client.",
     "repository":"https://github.com/arikaim/oauth-module.git",
     "requires": [
