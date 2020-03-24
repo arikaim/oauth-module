@@ -1,18 +1,20 @@
-### Arikaim CMS OAuth Client Module
+## Arikaim CMS OAuth Client Module
 ![1.0.0](https://img.shields.io/github/release/arikaim/oauth-module.svg)
 ![GPLv3](https://img.shields.io/badge/License-GPLv3-blue.svg)
 
-
+#### OAuth providers
+ * Twitter
+ * Github
+ * Google
+ * Facebook
 
 #### Requirements 
   * PHP 7.1
   * [Arikaim CMS](https://github.com/arikaim/arikaim)
 
 
-#### Install
+#### Installation
 
-```bash
-
+```sh
 composer require arikaim/oauth-module
-
 ```

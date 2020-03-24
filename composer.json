@@ -12,7 +12,11 @@
     "require": {
         "php": ">=7.1",
         "arikaim/installer": "*",
-        "league/oauth2-client": "^2.3"
+        "league/oauth1-client": "^1.7.0",
+        "league/oauth2-client": "^2.3.0",
+        "league/oauth2-facebook": "^2.0.0",
+        "league/oauth2-github": "^2.0.0",
+        "league/oauth2-google": "^2.0.0"
     },
     "extra": {     
         "path": "oauth"

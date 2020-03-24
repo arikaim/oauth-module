@@ -9,12 +9,15 @@
 */
 namespace Arikaim\Modules\Oauth;
 
+use League\OAuth1\Client\Credentials\TemporaryCredentials;
+
+use Arikaim\Core\Http\Session;
 use Arikaim\Core\Extension\Module;
 
 /**
- * OAuth module class
+ * Oauth module class
  */
-class OAuth extends Module
+class Oauth extends Module
 {
     /**
      * Provider reference
@@ -28,11 +31,96 @@ class OAuth extends Module
      */
     public function __construct()
     {
-        $this->provider = null;
-        // module details
-        $this->setServiceName('oauth');  
+        $this->provider = null;      
     }
     
+    /**
+     * Install module
+     *
+     * @return void
+     */
+    public function install()
+    {
+        $this->installDriver('Arikaim\\Modules\\Oauth\\Driver\\TwitterOauthDriver');
+        $this->installDriver('Arikaim\\Modules\\Oauth\\Driver\\GithubOauthDriver');
+        $this->installDriver('Arikaim\\Modules\\Oauth\\Driver\\GoogleOauthDriver');
+        $this->installDriver('Arikaim\\Modules\\Oauth\\Driver\\FacebookOauthDriver');
+
+        return true;
+    }
+
+    /**
+     * Get temporary credentials from session
+     *
+     * @return TemporaryCredentials
+     */
+    public function getTemporaryCredentials()
+    {
+        $identifier = Session::get('oauth.temp.identifier',null);
+        $secret = Session::get('oauth.temp.secret',null);
+
+        $credentials = new TemporaryCredentials();
+        $credentials->setIdentifier($identifier);
+        $credentials->setSecret($secret);
+
+        return $credentials;
+    }
+
+    /**
+     * Save OAuth2 state
+     *
+     * @param string $state
+     * @return void
+     */
+    public function saveState($state)
+    {
+        Session::set('oauth.state',$state);
+    }
+
+    /**
+     * Get OAuth2 state
+     *    
+     * @return string|null
+     */
+    public function getState()
+    {
+        return Session::get('oauth.state',null);
+    }
+
+    /**
+     * Clear OAuth2 state
+     *    
+     * @return void
+     */
+    public function clearState()
+    {
+        Session::remove('oauth.state');
+    }
+
+    /**
+     * Save temporary credentials to session
+     *
+     * @param TemporaryCredentials $credentials
+     * @return void
+     */
+    public function saveTemporaryCredentials($credentials)
+    {
+        // store credentials
+        Session::set('oauth.temp.identifier',$credentials->getIdentifier());
+        Session::set('oauth.temp.secret',$credentials->getSecret());
+    }
+
+    /**
+     * Clear temporary credentials from session
+     *
+     * @return TemporaryCredentials
+     */
+    public function clearTemporaryCredentials()
+    {
+        Session::remove('oauth.temp.identifier');
+        Session::remove('oauth.temp.secret');
+    }
+
     /**
      * Create provider
      *
@@ -59,24 +147,5 @@ class OAuth extends Module
     public function getProvider()
     {
         return $this->provider;
-    }
-
-    /**
-     * Test module
-     *
-     * @return boolean
-     */
-    public function test()
-    {
-        try {
-            $test_options = ['urlAuthorize' => '*','urlAccessToken' => '*', '','urlResourceOwnerDetails' => '*'];
-            $result = $this->create(null,$test_options);
-            $this->provider = null;
-        } catch(\Exception $e) {
-            $this->error = $e->getMessage();         
-            return false;
-        }
-
-        return $result;
-    }
+    }    
 }

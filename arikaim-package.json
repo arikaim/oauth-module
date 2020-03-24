@@ -2,15 +2,19 @@
     "title": "OAuth Client",
     "name": "oauth",
     "package-type": "module",
-    "version": "1.0.5",
+    "version": "1.0.6",
     "class": "Oauth",
     "type": "package",
     "description": "OAuth client.",
-    "repository":"https://github.com/arikaim/oauth-module.git",
-    "requires": [
-        "league/oauth2-client"
-    ],
-    "help": {
-        "url": "http://oauth2-client.thephpleague.com/"
-    }
+    "repository": "https://github.com/arikaim/oauth-module.git",
+    "require": {
+        "composer": [
+            "league/oauth2-client",
+            "league/oauth2-github",
+            "league/oauth2-facebook",
+            "league/oauth2-google",
+            "league/oauth1-client"
+        ]
+    },
+    "help": "http://oauth2-client.thephpleague.com/"        
 }
