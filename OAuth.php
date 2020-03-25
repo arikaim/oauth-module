@@ -67,6 +67,37 @@ class Oauth extends Module
     }
 
     /**
+     * Save OAuth2 action
+     *
+     * @param string $action
+     * @return void
+     */
+    public function saveAction($action)
+    {
+        Session::set('oauth.action',$action);
+    }
+
+    /**
+     * Get OAuth2 action
+     *    
+     * @return void
+     */
+    public function getAction()
+    {
+        return Session::get('oauth.action');
+    }
+
+    /**
+     * Clear OAuth2 action
+     *    
+     * @return void
+     */
+    public function clearAction()
+    {
+        Session::remove('oauth.action');
+    }
+
+    /**
      * Save OAuth2 state
      *
      * @param string $state

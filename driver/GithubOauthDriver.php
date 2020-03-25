@@ -76,9 +76,14 @@ class GithubOauthDriver implements DriverInterface, OauthClientInterface
     */
     public function initDriver($properties)
     {     
-        $config = $properties->getValues();         
+        $config = $properties->getValues();    
+        $action = $this->getDriverOption('action');
         $config['redirectUri'] = Url::BASE_URL . $config['redirectUri'];
-      
+     
+        if (empty($action) == false) {
+            $config['redirectUri'] .= '/' . $action;
+        }
+
         $this->instance = new Github($config);                          
     }
 
@@ -108,7 +113,7 @@ class GithubOauthDriver implements DriverInterface, OauthClientInterface
                 ->value('')
                 ->default('');
         }); 
-        // Oauth Callback
+        // OAuth Callback
         $properties->property('redirectUri',function($property) {
             $property
                 ->title('Redirect Url')

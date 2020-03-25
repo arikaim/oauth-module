@@ -72,9 +72,9 @@ class GoogleOauthDriver implements DriverInterface, OauthClientInterface
     */
     public function initDriver($properties)
     {     
-        $config = $properties->getValues();         
+        $config = $properties->getValues();      
         $config['redirectUri'] = Url::BASE_URL . $config['redirectUri'];
-      
+        
         $this->instance = new Google($config);                          
     }
 

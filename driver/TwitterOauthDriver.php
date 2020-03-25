@@ -75,9 +75,9 @@ class TwitterOauthDriver implements DriverInterface, OauthClientInterface
     */
     public function initDriver($properties)
     {     
-        $config = $properties->getValues();         
+        $config = $properties->getValues();      
         $config['callback_uri'] = Url::BASE_URL . $config['callback_uri'];
-      
+        
         $this->instance = new Twitter($config);                          
     }
 

@@ -73,7 +73,11 @@ class FacebookOauthDriver implements DriverInterface, OauthClientInterface
     public function initDriver($properties)
     {     
         $config = $properties->getValues();         
-      
+        $action = $this->getDriverOption('action');
+        if (empty($action) == false) {
+            $config['redirectUri'] .= '/' . $action;
+        }
+
         $this->instance = new Facebook($config);                          
     }
 
