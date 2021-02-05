@@ -7,20 +7,20 @@
  * @license     http://www.arikaim.com/license
  * 
 */
-namespace Arikaim\Modules\Oauth\Driver;
+namespace Arikaim\Modules\Oauth\Drivers;
 
-use League\OAuth2\Client\Provider\Google;
+use League\OAuth1\Client\Server\Twitter;
 
-use Arikaim\Modules\Oauth\Interfaces\OauthClientInterface;
 use Arikaim\Modules\Oauth\ResourceInfo;
+use Arikaim\Modules\Oauth\Interfaces\OauthClientInterface;
 use Arikaim\Core\Driver\Traits\Driver;
 use Arikaim\Core\Interfaces\Driver\DriverInterface;
 use Arikaim\Core\Http\Url;
 
 /**
- * Google oauth client driver class
+ * Twitter oauth client driver class
  */
-class GoogleOauthDriver implements DriverInterface, OauthClientInterface
+class TwitterOauthDriver implements DriverInterface, OauthClientInterface
 {   
     use Driver;
    
@@ -29,7 +29,7 @@ class GoogleOauthDriver implements DriverInterface, OauthClientInterface
      */
     public function __construct()
     {
-        $this->setDriverParams('google','oauth','Google','OAuth2 client driver for Google');
+        $this->setDriverParams('twitter','oauth','Twitter','OAuth1 client driver for Twitter');
     }
 
     /**
@@ -39,7 +39,7 @@ class GoogleOauthDriver implements DriverInterface, OauthClientInterface
      */
     public function getType()
     {
-        return 2;
+        return 1;
     }
 
     /**
@@ -50,16 +50,19 @@ class GoogleOauthDriver implements DriverInterface, OauthClientInterface
      */
     public function getResourceInfo($token)
     {
-        $user = $this->getInstance()->getResourceOwner($token);
+        $user = $this->getInstance()->getUserDetails($token);
+        $name = \explode(' ',$user->name);
+        $firstName = $name[0];
+        $lastName = (isset($name[1]) == true) ? $name[1] : '';
 
         $info = new ResourceInfo();
         $info
-            ->id($user->getId())
-            ->email($user->getEmail())
-            ->userName(null)
-            ->firstName($user->getFirstName())
-            ->lastName($user->getLastName())
-            ->avatar($user->getAvatar());
+            ->id($user->uid)
+            ->email($user->email)
+            ->userName($user->nickname)
+            ->firstName($firstName)
+            ->lastName($lastName)
+            ->avatar($user->profile_image_url);
 
         return $info;
     }
@@ -73,9 +76,9 @@ class GoogleOauthDriver implements DriverInterface, OauthClientInterface
     public function initDriver($properties)
     {     
         $config = $properties->getValues();      
-        $config['redirectUri'] = Url::BASE_URL . $config['redirectUri'];
+        $config['callback_uri'] = Url::BASE_URL . $config['callback_uri'];
         
-        $this->instance = new Google($config);                          
+        $this->instance = new Twitter($config);                          
     }
 
     /**
@@ -87,31 +90,31 @@ class GoogleOauthDriver implements DriverInterface, OauthClientInterface
     public function createDriverConfig($properties)
     {              
         // Twitter app Id
-        $properties->property('clientId',function($property) {
+        $properties->property('identifier',function($property) {
             $property
-                ->title('Client Id')
+                ->title('API Key')
                 ->type('text')
                 ->readonly(false)
                 ->value('')
                 ->default('');
         });   
         // Twitter app secret
-        $properties->property('clientSecret',function($property) {
+        $properties->property('secret',function($property) {
             $property
-                ->title('Client Secret')
+                ->title('API Secret Key')
                 ->type('text')
                 ->readonly(false)
                 ->value('')
                 ->default('');
         }); 
         // Oauth Callback
-        $properties->property('redirectUri',function($property) {
+        $properties->property('callback_uri',function($property) {
             $property
-                ->title('Redirect Url')
+                ->title('Callback')
                 ->type('text')
                 ->readonly(true)
-                ->value('/oauth/callback/google')
-                ->default('/oauth/callback/google');
+                ->value('/oauth/callback/twitter')
+                ->default('/oauth/callback/twitter');
         }); 
     }
 }

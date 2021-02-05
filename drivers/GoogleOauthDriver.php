@@ -7,9 +7,9 @@
  * @license     http://www.arikaim.com/license
  * 
 */
-namespace Arikaim\Modules\Oauth\Driver;
+namespace Arikaim\Modules\Oauth\Drivers;
 
-use League\OAuth2\Client\Provider\Github;
+use League\OAuth2\Client\Provider\Google;
 
 use Arikaim\Modules\Oauth\Interfaces\OauthClientInterface;
 use Arikaim\Modules\Oauth\ResourceInfo;
@@ -18,9 +18,9 @@ use Arikaim\Core\Interfaces\Driver\DriverInterface;
 use Arikaim\Core\Http\Url;
 
 /**
- * Github oauth client driver class
+ * Google oauth client driver class
  */
-class GithubOauthDriver implements DriverInterface, OauthClientInterface
+class GoogleOauthDriver implements DriverInterface, OauthClientInterface
 {   
     use Driver;
    
@@ -29,7 +29,7 @@ class GithubOauthDriver implements DriverInterface, OauthClientInterface
      */
     public function __construct()
     {
-        $this->setDriverParams('github','oauth','Github','OAuth2 client driver for Github');
+        $this->setDriverParams('google','oauth','Google','OAuth2 client driver for Google');
     }
 
     /**
@@ -51,19 +51,15 @@ class GithubOauthDriver implements DriverInterface, OauthClientInterface
     public function getResourceInfo($token)
     {
         $user = $this->getInstance()->getResourceOwner($token);
-        $userData = $user->toArray();
-        $name = \explode(' ',$userData['name']);
-        $firstName = $name[0];
-        $lastName = (isset($name[1]) == true) ? $name[1] : '';
 
         $info = new ResourceInfo();
         $info
             ->id($user->getId())
             ->email($user->getEmail())
-            ->userName($user->getNickname())
-            ->firstName($firstName)
-            ->lastName($lastName)
-            ->avatar($userData['avatar_url']);
+            ->userName(null)
+            ->firstName($user->getFirstName())
+            ->lastName($user->getLastName())
+            ->avatar($user->getAvatar());
 
         return $info;
     }
@@ -76,15 +72,10 @@ class GithubOauthDriver implements DriverInterface, OauthClientInterface
     */
     public function initDriver($properties)
     {     
-        $config = $properties->getValues();    
-        $action = $this->getDriverOption('action');
+        $config = $properties->getValues();      
         $config['redirectUri'] = Url::BASE_URL . $config['redirectUri'];
-     
-        if (empty($action) == false) {
-            $config['redirectUri'] .= '/' . $action;
-        }
-
-        $this->instance = new Github($config);                          
+        
+        $this->instance = new Google($config);                          
     }
 
     /**
@@ -113,14 +104,14 @@ class GithubOauthDriver implements DriverInterface, OauthClientInterface
                 ->value('')
                 ->default('');
         }); 
-        // OAuth Callback
+        // Oauth Callback
         $properties->property('redirectUri',function($property) {
             $property
                 ->title('Redirect Url')
                 ->type('text')
                 ->readonly(true)
-                ->value('/oauth/callback/github')
-                ->default('/oauth/callback/github');
+                ->value('/oauth/callback/google')
+                ->default('/oauth/callback/google');
         }); 
     }
 }

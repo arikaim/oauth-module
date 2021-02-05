@@ -7,20 +7,20 @@
  * @license     http://www.arikaim.com/license
  * 
 */
-namespace Arikaim\Modules\Oauth\Driver;
+namespace Arikaim\Modules\Oauth\Drivers;
 
-use League\OAuth2\Client\Provider\Facebook;
+use League\OAuth2\Client\Provider\Github;
 
 use Arikaim\Modules\Oauth\Interfaces\OauthClientInterface;
 use Arikaim\Modules\Oauth\ResourceInfo;
 use Arikaim\Core\Driver\Traits\Driver;
 use Arikaim\Core\Interfaces\Driver\DriverInterface;
-use Arikaim\Core\Arikaim;
+use Arikaim\Core\Http\Url;
 
 /**
- * Facebook oauth client driver class
+ * Github oauth client driver class
  */
-class FacebookOauthDriver implements DriverInterface, OauthClientInterface
+class GithubOauthDriver implements DriverInterface, OauthClientInterface
 {   
     use Driver;
    
@@ -29,7 +29,7 @@ class FacebookOauthDriver implements DriverInterface, OauthClientInterface
      */
     public function __construct()
     {
-        $this->setDriverParams('facebook','oauth','Facebook','OAuth2 client driver for Facebook');
+        $this->setDriverParams('github','oauth','Github','OAuth2 client driver for Github');
     }
 
     /**
@@ -51,15 +51,19 @@ class FacebookOauthDriver implements DriverInterface, OauthClientInterface
     public function getResourceInfo($token)
     {
         $user = $this->getInstance()->getResourceOwner($token);
-      
+        $userData = $user->toArray();
+        $name = \explode(' ',$userData['name']);
+        $firstName = $name[0];
+        $lastName = (isset($name[1]) == true) ? $name[1] : '';
+
         $info = new ResourceInfo();
         $info
             ->id($user->getId())
             ->email($user->getEmail())
-            ->userName(null)
-            ->firstName($user->getFirstName())
-            ->lastName($user->getLastName())
-            ->avatar($user->getPictureUrl());
+            ->userName($user->getNickname())
+            ->firstName($firstName)
+            ->lastName($lastName)
+            ->avatar($userData['avatar_url']);
 
         return $info;
     }
@@ -72,9 +76,15 @@ class FacebookOauthDriver implements DriverInterface, OauthClientInterface
     */
     public function initDriver($properties)
     {     
-        $config = $properties->getValues();         
-       
-        $this->instance = new Facebook($config);                          
+        $config = $properties->getValues();    
+        $action = $this->getDriverOption('action');
+        $config['redirectUri'] = Url::BASE_URL . $config['redirectUri'];
+     
+        if (empty($action) == false) {
+            $config['redirectUri'] .= '/' . $action;
+        }
+
+        $this->instance = new Github($config);                          
     }
 
     /**
@@ -103,23 +113,14 @@ class FacebookOauthDriver implements DriverInterface, OauthClientInterface
                 ->value('')
                 ->default('');
         }); 
-        // Oauth Callback
+        // OAuth Callback
         $properties->property('redirectUri',function($property) {
             $property
                 ->title('Redirect Url')
                 ->type('text')
                 ->readonly(true)
-                ->value('https://' . Arikaim::getHost() . BASE_PATH . '/oauth/callback/facebook')
-                ->default('https://' . Arikaim::getHost() . BASE_PATH . '/oauth/callback/facebook');
-        }); 
-        // graphApiVersion
-        $properties->property('graphApiVersion',function($property) {
-            $property
-                ->title('Graph Api Version')
-                ->type('text')
-                ->readonly(true)
-                ->value('v2.10')
-                ->default('v2.10');
+                ->value('/oauth/callback/github')
+                ->default('/oauth/callback/github');
         }); 
     }
 }

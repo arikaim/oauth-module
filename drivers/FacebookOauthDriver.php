@@ -7,20 +7,20 @@
  * @license     http://www.arikaim.com/license
  * 
 */
-namespace Arikaim\Modules\Oauth\Driver;
+namespace Arikaim\Modules\Oauth\Drivers;
 
-use League\OAuth1\Client\Server\Twitter;
+use League\OAuth2\Client\Provider\Facebook;
 
-use Arikaim\Modules\Oauth\ResourceInfo;
 use Arikaim\Modules\Oauth\Interfaces\OauthClientInterface;
+use Arikaim\Modules\Oauth\ResourceInfo;
 use Arikaim\Core\Driver\Traits\Driver;
 use Arikaim\Core\Interfaces\Driver\DriverInterface;
-use Arikaim\Core\Http\Url;
+use Arikaim\Core\Arikaim;
 
 /**
- * Twitter oauth client driver class
+ * Facebook oauth client driver class
  */
-class TwitterOauthDriver implements DriverInterface, OauthClientInterface
+class FacebookOauthDriver implements DriverInterface, OauthClientInterface
 {   
     use Driver;
    
@@ -29,7 +29,7 @@ class TwitterOauthDriver implements DriverInterface, OauthClientInterface
      */
     public function __construct()
     {
-        $this->setDriverParams('twitter','oauth','Twitter','OAuth1 client driver for Twitter');
+        $this->setDriverParams('facebook','oauth','Facebook','OAuth2 client driver for Facebook');
     }
 
     /**
@@ -39,7 +39,7 @@ class TwitterOauthDriver implements DriverInterface, OauthClientInterface
      */
     public function getType()
     {
-        return 1;
+        return 2;
     }
 
     /**
@@ -50,19 +50,16 @@ class TwitterOauthDriver implements DriverInterface, OauthClientInterface
      */
     public function getResourceInfo($token)
     {
-        $user = $this->getInstance()->getUserDetails($token);
-        $name = \explode(' ',$user->name);
-        $firstName = $name[0];
-        $lastName = (isset($name[1]) == true) ? $name[1] : '';
-
+        $user = $this->getInstance()->getResourceOwner($token);
+      
         $info = new ResourceInfo();
         $info
-            ->id($user->uid)
-            ->email($user->email)
-            ->userName($user->nickname)
-            ->firstName($firstName)
-            ->lastName($lastName)
-            ->avatar($user->profile_image_url);
+            ->id($user->getId())
+            ->email($user->getEmail())
+            ->userName(null)
+            ->firstName($user->getFirstName())
+            ->lastName($user->getLastName())
+            ->avatar($user->getPictureUrl());
 
         return $info;
     }
@@ -75,10 +72,9 @@ class TwitterOauthDriver implements DriverInterface, OauthClientInterface
     */
     public function initDriver($properties)
     {     
-        $config = $properties->getValues();      
-        $config['callback_uri'] = Url::BASE_URL . $config['callback_uri'];
-        
-        $this->instance = new Twitter($config);                          
+        $config = $properties->getValues();         
+       
+        $this->instance = new Facebook($config);                          
     }
 
     /**
@@ -90,31 +86,40 @@ class TwitterOauthDriver implements DriverInterface, OauthClientInterface
     public function createDriverConfig($properties)
     {              
         // Twitter app Id
-        $properties->property('identifier',function($property) {
+        $properties->property('clientId',function($property) {
             $property
-                ->title('API Key')
+                ->title('Client Id')
                 ->type('text')
                 ->readonly(false)
                 ->value('')
                 ->default('');
         });   
         // Twitter app secret
-        $properties->property('secret',function($property) {
+        $properties->property('clientSecret',function($property) {
             $property
-                ->title('API Secret Key')
+                ->title('Client Secret')
                 ->type('text')
                 ->readonly(false)
                 ->value('')
                 ->default('');
         }); 
         // Oauth Callback
-        $properties->property('callback_uri',function($property) {
+        $properties->property('redirectUri',function($property) {
             $property
-                ->title('Callback')
+                ->title('Redirect Url')
                 ->type('text')
                 ->readonly(true)
-                ->value('/oauth/callback/twitter')
-                ->default('/oauth/callback/twitter');
+                ->value('https://' . Arikaim::getHost() . BASE_PATH . '/oauth/callback/facebook')
+                ->default('https://' . Arikaim::getHost() . BASE_PATH . '/oauth/callback/facebook');
+        }); 
+        // graphApiVersion
+        $properties->property('graphApiVersion',function($property) {
+            $property
+                ->title('Graph Api Version')
+                ->type('text')
+                ->readonly(true)
+                ->value('v2.10')
+                ->default('v2.10');
         }); 
     }
 }

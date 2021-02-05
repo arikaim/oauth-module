@@ -41,10 +41,10 @@ class Oauth extends Module
      */
     public function install()
     {
-        $this->installDriver('Arikaim\\Modules\\Oauth\\Driver\\TwitterOauthDriver');
-        $this->installDriver('Arikaim\\Modules\\Oauth\\Driver\\GithubOauthDriver');
-        $this->installDriver('Arikaim\\Modules\\Oauth\\Driver\\GoogleOauthDriver');
-        $this->installDriver('Arikaim\\Modules\\Oauth\\Driver\\FacebookOauthDriver');
+        $this->installDriver('Arikaim\\Modules\\Oauth\\Drivers\\TwitterOauthDriver');
+        $this->installDriver('Arikaim\\Modules\\Oauth\\Drivers\\GithubOauthDriver');
+        $this->installDriver('Arikaim\\Modules\\Oauth\\Drivers\\GoogleOauthDriver');
+        $this->installDriver('Arikaim\\Modules\\Oauth\\Drivers\\FacebookOauthDriver');
 
         return true;
     }
