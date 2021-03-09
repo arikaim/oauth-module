@@ -24,16 +24,9 @@ class Oauth extends Module
      *
      * @var object
      */
-    private $provider;
+    private $provider = null;
     
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->provider = null;      
-    }
-    
+
     /**
      * Install module
      *
@@ -45,8 +38,6 @@ class Oauth extends Module
         $this->installDriver('Arikaim\\Modules\\Oauth\\Drivers\\GithubOauthDriver');
         $this->installDriver('Arikaim\\Modules\\Oauth\\Drivers\\GoogleOauthDriver');
         $this->installDriver('Arikaim\\Modules\\Oauth\\Drivers\\FacebookOauthDriver');
-
-        return true;
     }
 
     /**
@@ -167,7 +158,7 @@ class Oauth extends Module
         }
         $this->provider = new $providerClass($options,$collaborators);
 
-        return is_object($this->provider);
+        return \is_object($this->provider);
     }
 
     /**
