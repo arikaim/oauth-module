@@ -9,8 +9,7 @@
 */
 namespace Arikaim\Modules\Oauth\Drivers;
 
-use Arikaim\Modules\Oauth\Providers\Google;
-//use League\OAuth2\Client\Provider\Google;
+use League\OAuth2\Client\Provider\Google;
 
 use Arikaim\Modules\Oauth\Interfaces\OauthClientInterface;
 use Arikaim\Modules\Oauth\ResourceInfo;
