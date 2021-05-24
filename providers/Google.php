@@ -58,7 +58,7 @@ class Google extends AbstractProvider
 
     public function getResourceOwnerDetailsUrl(AccessToken $token)
     {
-        return $this->resourceOwnerUrl ?? 'https://openidconnect.googleapis.com/v3/userinfo';
+        return $this->resourceOwnerUrl ?? 'https://openidconnect.googleapis.com/v2/userinfo';
     }
 
     protected function getAuthorizationParameters(array $options)
