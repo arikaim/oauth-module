@@ -86,7 +86,7 @@ class GoogleOauthDriver implements DriverInterface, OauthClientInterface
      */
     public function createDriverConfig($properties)
     {              
-        // Twitter app Id
+        // Google client Id
         $properties->property('clientId',function($property) {
             $property
                 ->title('Client Id')
@@ -95,7 +95,7 @@ class GoogleOauthDriver implements DriverInterface, OauthClientInterface
                 ->value('')
                 ->default('');
         });   
-        // Twitter app secret
+        // Google client secret
         $properties->property('clientSecret',function($property) {
             $property
                 ->title('Client Secret')

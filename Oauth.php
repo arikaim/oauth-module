@@ -63,7 +63,7 @@ class Oauth extends Module
      * @param string $action
      * @return void
      */
-    public function saveAction($action)
+    public function saveAction($action): void
     {
         Session::set('oauth.action',$action);
     }
@@ -71,7 +71,7 @@ class Oauth extends Module
     /**
      * Get OAuth2 action
      *    
-     * @return void
+     * @return mixed
      */
     public function getAction()
     {
@@ -83,7 +83,7 @@ class Oauth extends Module
      *    
      * @return void
      */
-    public function clearAction()
+    public function clearAction(): void
     {
         Session::remove('oauth.action');
     }
@@ -94,7 +94,7 @@ class Oauth extends Module
      * @param string $state
      * @return void
      */
-    public function saveState($state)
+    public function saveState($state): void
     {
         Session::set('oauth.state',$state);
     }
