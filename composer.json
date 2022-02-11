@@ -10,7 +10,7 @@
         "homepage": "http://arikaim.com"
     }],
     "require": {
-        "php": ">=7.1",
+        "php": ">=7.2",
         "arikaim/installer": "*",
         "league/oauth1-client": "^1.7.0",
         "league/oauth2-client": "^2.3.0",

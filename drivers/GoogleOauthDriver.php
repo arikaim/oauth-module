@@ -29,7 +29,7 @@ class GoogleOauthDriver implements DriverInterface, OauthClientInterface
      */
     public function __construct()
     {
-        $this->setDriverParams('google','oauth','Google','OAuth2 client driver for Google');
+        $this->setDriverParams('google.oauth','oauth','Google','OAuth2 client driver for Google');
     }
 
     /**
