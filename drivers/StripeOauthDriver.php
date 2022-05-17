@@ -9,18 +9,18 @@
 */
 namespace Arikaim\Modules\Oauth\Drivers;
 
-use League\OAuth2\Client\Provider\Github;
+use AdamPaterson\OAuth2\Client\Provider\Stripe;
 
-use Arikaim\Modules\Oauth\Interfaces\OauthClientInterface;
 use Arikaim\Modules\Oauth\ResourceInfo;
+use Arikaim\Modules\Oauth\Interfaces\OauthClientInterface;
 use Arikaim\Core\Driver\Traits\Driver;
 use Arikaim\Core\Interfaces\Driver\DriverInterface;
 use Arikaim\Core\Http\Url;
 
 /**
- * Github oauth client driver class
+ * Stripe oauth client driver class
  */
-class GithubOauthDriver implements DriverInterface, OauthClientInterface
+class StripeOauthDriver implements DriverInterface, OauthClientInterface
 {   
     use Driver;
    
@@ -29,7 +29,7 @@ class GithubOauthDriver implements DriverInterface, OauthClientInterface
      */
     public function __construct()
     {
-        $this->setDriverParams('github','oauth','Github','OAuth2 client driver for Github');
+        $this->setDriverParams('stripe-oauth','oauth','Stripe Oauth','OAuth2 client driver for Stripe');
     }
 
     /**
@@ -50,20 +50,19 @@ class GithubOauthDriver implements DriverInterface, OauthClientInterface
      */
     public function getResourceInfo($token)
     {
-        $user = $this->getInstance()->getResourceOwner($token);
-        $userData = $user->toArray();
-        $name = \explode(' ',$userData['name']);
-        $firstName = $name[0];
-        $lastName = (isset($name[1]) == true) ? $name[1] : '';
-
+        $user = $this->getInstance()->getUserDetails($token);
         $info = new ResourceInfo();
+        $fullName = $user->getDisplayName();
+        $name = \explode(' ',$fullName);
+        $firstName = $name[0];
+        $lastName = $name[1] ?? '';
+
         $info
             ->id($user->getId())
             ->email($user->getEmail())
-            ->userName($user->getNickname())
             ->firstName($firstName)
             ->lastName($lastName)
-            ->avatar($userData['avatar_url']);
+            ->avatar($user->getBusinessLogo());
 
         return $info;
     }
@@ -76,15 +75,14 @@ class GithubOauthDriver implements DriverInterface, OauthClientInterface
     */
     public function initDriver($properties)
     {     
-        $config = $properties->getValues();    
-        $action = $this->getDriverOption('action');
+        $config = $properties->getValues();      
         $config['redirectUri'] = Url::BASE_URL . $config['redirectUri'];
-     
-        if (empty($action) == false) {
-            $config['redirectUri'] .= '/' . $action;
-        }
 
-        $this->instance = new Github($config);                          
+        $this->instance = new Stripe([
+            'clientId'          => $config['clientId'],
+            'clientSecret'      => $config['clientSecret'],
+            'redirectUri'       => $config['redirectUri'],
+        ]);                         
     }
 
     /**
@@ -95,7 +93,7 @@ class GithubOauthDriver implements DriverInterface, OauthClientInterface
      */
     public function createDriverConfig($properties)
     {              
-        // Github app Id
+        // Stripe cleint Id
         $properties->property('clientId',function($property) {
             $property
                 ->title('Client Id')
@@ -104,7 +102,7 @@ class GithubOauthDriver implements DriverInterface, OauthClientInterface
                 ->value('')
                 ->default('');
         });   
-        // Github app secret
+        // Stripe cleint secret
         $properties->property('clientSecret',function($property) {
             $property
                 ->title('Client Secret')
@@ -119,8 +117,8 @@ class GithubOauthDriver implements DriverInterface, OauthClientInterface
                 ->title('Redirect Url')
                 ->type('text')
                 ->readonly(true)
-                ->value('/oauth/callback/github')
-                ->default('/oauth/callback/github');
+                ->value('/oauth/callback/stripe-oauth')
+                ->default('/oauth/callback/stripe-oauth');
         }); 
     }
 }
