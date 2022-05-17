@@ -82,6 +82,8 @@ class StripeOauthDriver implements DriverInterface, OauthClientInterface
             'clientId'          => $config['clientId'],
             'clientSecret'      => $config['clientSecret'],
             'redirectUri'       => $config['redirectUri'],
+            'scope'             => ['read_write'],
+            'response_type'     => 'code'
         ]);                         
     }
 
