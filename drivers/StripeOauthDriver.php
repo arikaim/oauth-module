@@ -33,6 +33,17 @@ class StripeOauthDriver implements DriverInterface, OauthClientInterface
     }
 
     /**
+     * Get oauth2 options
+     * @return array
+     */
+    public function getOptions(): array
+    {
+        return [
+            'scope' => ['read_write']
+        ];
+    }
+
+    /**
      * Get oauth client type (1 or 2)
      *
      * @return integer

@@ -33,6 +33,15 @@ class GithubOauthDriver implements DriverInterface, OauthClientInterface
     }
 
     /**
+     * Get oauth2 options
+     * @return array
+     */
+    public function getOptions(): array
+    {
+        return [];
+    }
+
+    /**
      * Get oauth client type (1 or 2)
      *
      * @return integer

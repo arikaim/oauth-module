@@ -17,7 +17,7 @@ interface OauthClientInterface
     /**
      * Get oauth type 1 or 2 
      *    
-     * @return ineteger
+     * @return int
      */
     public function getType();
 
@@ -28,4 +28,11 @@ interface OauthClientInterface
      * @return mixed
      */
     public function getResourceInfo($token);
+
+    /**
+     * Get oauth2 options
+     * @return array
+     */
+    public function getOptions(): array;
+    
 }
