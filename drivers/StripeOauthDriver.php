@@ -61,19 +61,21 @@ class StripeOauthDriver implements DriverInterface, OauthClientInterface
      */
     public function getResourceInfo($token)
     {
-        $user = $this->getInstance()->getUserDetails($token);
+        $user = $this->getInstance()->getResourceOwner($token);
+        $data = $user->toArray();
+
         $info = new ResourceInfo();
-        $fullName = $user->getDisplayName();
+        $fullName = $data['display_name'] ?? '';
         $name = \explode(' ',$fullName);
         $firstName = $name[0];
         $lastName = $name[1] ?? '';
 
         $info
-            ->id($user->getId())
-            ->email($user->getEmail())
+            ->id($data['id'] ?? '')
+            ->email($data['email'] ?? '')
             ->firstName($firstName)
             ->lastName($lastName)
-            ->avatar($user->getBusinessLogo());
+            ->avatar($data['business_logo'] ?? '');
 
         return $info;
     }
