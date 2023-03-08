@@ -16,7 +16,7 @@
         "league/oauth2-client": "^2.3.0",
         "league/oauth2-facebook": "^2.0.0",
         "league/oauth2-github": "^2.0.0",
-        "league/oauth2-google": "^3.0.0",
+        "league/oauth2-google": "^3.0.0",       
         "adam-paterson/oauth2-stripe": "^2.0.0"
     },
     "extra": {     

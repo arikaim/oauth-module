@@ -38,6 +38,7 @@ class Oauth extends Module
         $this->installDriver('Arikaim\\Modules\\Oauth\\Drivers\\GoogleOauthDriver');
         $this->installDriver('Arikaim\\Modules\\Oauth\\Drivers\\FacebookOauthDriver');
         $this->installDriver('Arikaim\\Modules\\Oauth\\Drivers\\StripeOauthDriver');
+        $this->installDriver('Arikaim\\Modules\\Oauth\\Drivers\\SquareOauthDriver');
     }
 
     /**

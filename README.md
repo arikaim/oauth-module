@@ -7,6 +7,7 @@
  * Github
  * Google
  * Facebook
+ * Square
 
 #### Requirements  
   * [Arikaim CMS](https://github.com/arikaim/arikaim)
@@ -15,5 +16,7 @@
 #### Installation
 
 ```sh
+
 composer require arikaim/oauth-module
+
 ```

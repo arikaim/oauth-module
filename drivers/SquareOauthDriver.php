@@ -9,18 +9,18 @@
 */
 namespace Arikaim\Modules\Oauth\Drivers;
 
-use League\OAuth2\Client\Provider\Facebook;
+use Arikaim\Modules\Oauth\Providers\Square;
 
-use Arikaim\Modules\Oauth\Interfaces\OauthClientInterface;
 use Arikaim\Modules\Oauth\ResourceInfo;
+use Arikaim\Modules\Oauth\Interfaces\OauthClientInterface;
 use Arikaim\Core\Driver\Traits\Driver;
 use Arikaim\Core\Interfaces\Driver\DriverInterface;
-use Arikaim\Core\Arikaim;
+use Arikaim\Core\Http\Url;
 
 /**
- * Facebook oauth client driver class
+ * Square oauth client driver class
  */
-class FacebookOauthDriver implements DriverInterface, OauthClientInterface
+class SquareOauthDriver implements DriverInterface, OauthClientInterface
 {   
     use Driver;
    
@@ -29,7 +29,7 @@ class FacebookOauthDriver implements DriverInterface, OauthClientInterface
      */
     public function __construct()
     {
-        $this->setDriverParams('facebook','oauth','Facebook','OAuth2 client driver for Facebook');
+        $this->setDriverParams('square-oauth','oauth','Square Oauth','OAuth2 client driver for Square');
     }
 
     /**
@@ -38,7 +38,9 @@ class FacebookOauthDriver implements DriverInterface, OauthClientInterface
      */
     public function getOptions(): array
     {
-        return [];
+        return [
+            'scope' => ['MERCHANT_PROFILE_READ']
+        ];
     }
 
     /**
@@ -60,15 +62,20 @@ class FacebookOauthDriver implements DriverInterface, OauthClientInterface
     public function getResourceInfo($token)
     {
         $user = $this->getInstance()->getResourceOwner($token);
-      
+        $data = $user->toArray();
+
         $info = new ResourceInfo();
+        $fullName = $data['display_name'] ?? '';
+        $name = \explode(' ',$fullName);
+        $firstName = $name[0];
+        $lastName = $name[1] ?? '';
+
         $info
-            ->id($user->getId())
-            ->email($user->getEmail())
-            ->userName(null)
-            ->firstName($user->getFirstName())
-            ->lastName($user->getLastName())
-            ->avatar($user->getPictureUrl());
+            ->id($data['id'] ?? '')
+            ->email($data['email'] ?? '')
+            ->firstName($firstName)
+            ->lastName($lastName)
+            ->avatar($data['business_logo'] ?? '');
 
         return $info;
     }
@@ -81,9 +88,17 @@ class FacebookOauthDriver implements DriverInterface, OauthClientInterface
     */
     public function initDriver($properties)
     {     
-        $config = $properties->getValues();         
-       
-        $this->instance = new Facebook($config);                          
+        $config = $properties->getValues();      
+        $config['redirectUri'] = Url::BASE_URL . $config['redirectUri'];
+
+        $this->instance = new Square([
+            'clientId'          => $config['clientId'],
+            'clientSecret'      => $config['clientSecret'],
+            'redirectUri'       => $config['redirectUri'],
+            'scope'             => ['MERCHANT_PROFILE_READ'],
+            'response_type'     => 'code',
+            'sandbox'           => true,
+        ]);                         
     }
 
     /**
@@ -94,7 +109,7 @@ class FacebookOauthDriver implements DriverInterface, OauthClientInterface
      */
     public function createDriverConfig($properties)
     {              
-        // Twitter app Id
+        // Stripe cleint Id
         $properties->property('clientId',function($property) {
             $property
                 ->title('Client Id')
@@ -103,7 +118,7 @@ class FacebookOauthDriver implements DriverInterface, OauthClientInterface
                 ->value('')
                 ->default('');
         });   
-        // Twitter app secret
+        // Stripe cleint secret
         $properties->property('clientSecret',function($property) {
             $property
                 ->title('Client Secret')
@@ -112,23 +127,14 @@ class FacebookOauthDriver implements DriverInterface, OauthClientInterface
                 ->value('')
                 ->default('');
         }); 
-        // Oauth Callback
+        // OAuth Callback
         $properties->property('redirectUri',function($property) {
             $property
                 ->title('Redirect Url')
                 ->type('text')
                 ->readonly(true)
-                ->value('https://' . Arikaim::getHost() . BASE_PATH . '/oauth/callback/facebook')
-                ->default('https://' . Arikaim::getHost() . BASE_PATH . '/oauth/callback/facebook');
-        }); 
-        // graphApiVersion
-        $properties->property('graphApiVersion',function($property) {
-            $property
-                ->title('Graph Api Version')
-                ->type('text')
-                ->readonly(true)
-                ->value('v2.10')
-                ->default('v2.10');
+                ->value('/oauth/callback/square-oauth')
+                ->default('/oauth/callback/square-oauth');
         }); 
     }
 }
