@@ -95,9 +95,9 @@ class SquareOauthDriver implements DriverInterface, OauthClientInterface
             'clientId'          => $config['clientId'],
             'clientSecret'      => $config['clientSecret'],
             'redirectUri'       => $config['redirectUri'],
-            'scope'             => ['MERCHANT_PROFILE_READ'],
+            'scope'             => \explode(',',$properties->getValue('scope')),
             'response_type'     => 'code',
-            'sandbox'           => true,
+            'sandbox'           => $config['sandbox'] ?? true,
         ]);                         
     }
 
@@ -109,7 +109,7 @@ class SquareOauthDriver implements DriverInterface, OauthClientInterface
      */
     public function createDriverConfig($properties)
     {              
-        // Stripe cleint Id
+        // Square cleint Id
         $properties->property('clientId',function($property) {
             $property
                 ->title('Client Id')
@@ -118,7 +118,7 @@ class SquareOauthDriver implements DriverInterface, OauthClientInterface
                 ->value('')
                 ->default('');
         });   
-        // Stripe cleint secret
+        // Square cleint secret
         $properties->property('clientSecret',function($property) {
             $property
                 ->title('Client Secret')
@@ -127,6 +127,25 @@ class SquareOauthDriver implements DriverInterface, OauthClientInterface
                 ->value('')
                 ->default('');
         }); 
+        // Square scopes
+        $properties->property('scope',function($property) {
+            $property
+                ->title('Scope')
+                ->type('text')
+                ->readonly(false)
+                ->value('')
+                ->default('MERCHANT_PROFILE_READ');
+        });  
+
+        // Mode
+         $properties->property('sandbox',function($property) {
+            $property
+                ->title('Sandbox')
+                ->type('boolean')
+                ->readonly(false)                
+                ->default(false);
+        });  
+
         // OAuth Callback
         $properties->property('redirectUri',function($property) {
             $property

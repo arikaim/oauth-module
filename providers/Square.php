@@ -11,8 +11,12 @@ namespace Arikaim\Modules\Oauth\Providers;
 
 use League\OAuth2\Client\Provider\AbstractProvider;
 use League\OAuth2\Client\Token\AccessToken;
+use League\OAuth2\Client\Grant\AbstractGrant;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use Psr\Http\Message\ResponseInterface;
+
+use Arikaim\Modules\Oauth\Providers\SquareUser;
+use Arikaim\Core\Utils\DateTime;
 
 /**
  * Square oauth provider
@@ -26,27 +30,55 @@ class Square extends AbstractProvider
      */
     protected $sandbox;
 
-
+    /**
+     * Get auth url
+     *
+     * @return string
+     */
     public function getBaseAuthorizationUrl(): string
     {
         return $this->getConnectUrl('oauth2/authorize');
     }
 
+    /**
+     * Get access token url
+     *
+     * @param array $params
+     * @return string
+     */
     public function getBaseAccessTokenUrl(array $params): string
     {
         return $this->getConnectUrl('oauth2/token');
     }
 
+    /**
+     * Get resource owner url
+     *
+     * @param AccessToken $token
+     * @return string
+     */
     public function getResourceOwnerDetailsUrl(AccessToken $token): string
     {
         return $this->getConnectUrl('v2/merchants/me');        
     }
     
+    /**
+     * Get default scopes
+     *
+     * @return array
+     */
     public function getDefaultScopes(): array
     {
         return ['MERCHANT_PROFILE_READ'];
     }
 
+    /**
+     * Check response
+     *
+     * @param ResponseInterface $response
+     * @param mixed            $data
+     * @return void
+     */
     protected function checkResponse(ResponseInterface $response, $data)
     {
         if (empty($data['error'])) {
@@ -57,6 +89,44 @@ class Square extends AbstractProvider
         throw new IdentityProviderException($message, $data['error']['code'], $data);
     }
     
+    /**
+     * Creates an access token from a response.
+     *
+     * The grant that was used to fetch the response can be used to provide
+     * additional context.
+     *
+     * @param  array $response
+     * @param  AbstractGrant $grant
+     * @return AccessTokenInterface
+     */
+    protected function createAccessToken(array $response, AbstractGrant $grant)
+    {
+        $expireTime = $response['expires_at'] ?? null;
+        if (empty($expireTime) == false) {
+            $response['expires_in'] = DateTime::create($expireTime)->getTimestamp() - DateTime::getCurrentTimestamp();
+        }
+    
+        return new AccessToken($response);
+    }
+
+    /**
+     * Requests and returns the resource owner of given access token.
+     *
+     * @param  AccessToken $token
+     * @return ResourceOwnerInterface
+     */
+    public function getResourceOwner(AccessToken $token)
+    {
+        return new SquareUser([]);
+    }
+
+    /**
+     * Create resource owner
+     *
+     * @param array       $response
+     * @param AccessToken $token
+     * @return void
+     */
     protected function createResourceOwner(array $response, AccessToken $token)
     {
         return [];
@@ -86,26 +156,5 @@ class Square extends AbstractProvider
     protected function fetchResourceOwnerDetails(AccessToken $token)
     {
         return [];
-    }
-
-    /**
-     * Get the URL for rewnewing an access token.
-     *
-     * Square does not provide normal refresh tokens, and provides token
-     * renewal instead.
-     *
-     * @return string
-     */
-    public function urlRenewToken()
-    {
-        return $this->getConnectUrl(sprintf(
-            'oauth2/clients/%s/access-token/renew',
-            $this->clientId
-        ));
-    }
-
-    public function urlUserDetails(AccessToken $token)
-    {
-        return $this->getConnectUrl('v1/me');
-    }
+    } 
 }
