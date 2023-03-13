@@ -16,6 +16,7 @@ use Arikaim\Modules\Oauth\Interfaces\OauthClientInterface;
 use Arikaim\Core\Driver\Traits\Driver;
 use Arikaim\Core\Interfaces\Driver\DriverInterface;
 use Arikaim\Core\Http\Url;
+use Arikaim\Core\Http\Session;
 
 /**
  * Square oauth client driver class
@@ -90,12 +91,15 @@ class SquareOauthDriver implements DriverInterface, OauthClientInterface
     {     
         $config = $properties->getValues();      
         $config['redirectUri'] = Url::BASE_URL . $config['redirectUri'];
+        $scope = \explode(',',$properties->getValue('scope'));
+
+        Session::set('oauth.scope',$properties->getValue('scope'));
 
         $this->instance = new Square([
             'clientId'          => $config['clientId'],
             'clientSecret'      => $config['clientSecret'],
             'redirectUri'       => $config['redirectUri'],
-            'scope'             => \explode(',',$properties->getValue('scope')),
+            'scope'             => $scope,
             'response_type'     => 'code',
             'sandbox'           => $config['sandbox'] ?? true,
         ]);                         

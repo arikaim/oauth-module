@@ -2,7 +2,7 @@
     "title": "OAuth Client",
     "name": "oauth",
     "package-type": "module",
-    "version": "1.2.3",
+    "version": "1.2.4",
     "class": "Oauth",
     "type": "package",
     "description": "OAuth client.",
